@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="24dp"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/tvRol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rol: ..."
+        android:textSize="14sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Humedad del suelo"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/tvHumedad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--%"
+        android:textSize="56sp"/>
+
+    <TextView
+        android:id="@+id/tvBomba"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Bomba: --"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:id="@+id/tvModo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modo: --"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/btnBomba"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Encender / apagar bomba"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnAuto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Volver a automático"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnHistorial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ver historial"/>
+
+    <Button
+        android:id="@+id/btnSalir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Cerrar sesión"/>
+</LinearLayout>
