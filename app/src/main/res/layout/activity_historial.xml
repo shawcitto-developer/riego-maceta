@@ -12,6 +12,14 @@
         android:text="Historial (últimas 20 lecturas)"
         android:textSize="20sp"/>
 
+    <TextView
+        android:id="@+id/tvOrigen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text=""
+        android:textSize="13sp"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

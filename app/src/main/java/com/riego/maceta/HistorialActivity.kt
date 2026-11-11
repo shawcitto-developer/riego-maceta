@@ -14,36 +14,56 @@ import java.util.Locale
 
 class HistorialActivity : AppCompatActivity() {
 
-    private val consulta = FirebaseDatabase.getInstance().reference
-        .child("historial").limitToLast(20)
+    private lateinit var local: DbLocal
     private lateinit var tvLista: TextView
+    private lateinit var tvOrigen: TextView
+    private val fmt = SimpleDateFormat("dd/MM HH:mm:ss", Locale.getDefault())
+    private val consulta = FirebaseDatabase.getInstance().reference.child("historial").limitToLast(100)
+    private var escuchando = false
 
     private val listener = object : ValueEventListener {
         override fun onDataChange(s: DataSnapshot) {
-            val fmt = SimpleDateFormat("dd/MM HH:mm:ss", Locale.getDefault())
-            val sb = StringBuilder()
-            for (fila in s.children.toList().reversed()) {
-                val v = (fila.child("valor").value as? Number)?.toDouble()
-                val ts = (fila.child("ts").value as? Number)?.toLong() ?: 0L
-                sb.append("${fmt.format(Date(ts * 1000))}   →   $v %\n")
+            for (fila in s.children) {
+                val v = (fila.child("valor").value as? Number)?.toDouble() ?: continue
+                val ts = (fila.child("ts").value as? Number)?.toLong() ?: continue
+                local.guardarLectura(ts, v)           // copia en el telefono (hasta 7 dias)
             }
-            tvLista.text = if (sb.isEmpty()) "Sin datos todavía" else sb.toString()
+            mostrar("En línea")
         }
         override fun onCancelled(e: DatabaseError) {
-            tvLista.text = "Error: ${e.message}"
+            mostrar("Sin conexión")
         }
+    }
+
+    private fun mostrar(origen: String) {
+        val filas = local.ultimasLecturas(20)
+        tvOrigen.text = "$origen · ${local.totalLecturas()} lecturas guardadas en el teléfono (máx. 7 días)"
+        tvLista.text = if (filas.isEmpty()) "Sin datos todavía" else
+            filas.joinToString("\n") { "${fmt.format(Date(it.first * 1000))}   →   ${it.second} %" }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_historial)
+        local = DbLocal(this)
         tvLista = findViewById(R.id.tvLista)
+        tvOrigen = findViewById(R.id.tvOrigen)
         findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
-        consulta.addValueEventListener(listener)
+        mostrar("Datos guardados")                    // se ve al instante, aunque no haya red
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!escuchando) { consulta.addValueEventListener(listener); escuchando = true }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (escuchando) { consulta.removeEventListener(listener); escuchando = false }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        consulta.removeEventListener(listener)
+        if (::local.isInitialized) local.close()
     }
 }
